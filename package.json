@@ -1,0 +1,21 @@
+{
+  "name": "ironsofheartrblx",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "Roblox",
+    "Nevermore",
+    "Lua"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@quenty/binder": "^14.32.0",
+    "@quenty/clienttranslator": "^14.33.0",
+    "@quenty/cmdrservice": "^13.39.0",
+    "@quenty/loader": "^10.10.0",
+    "@quenty/servicebag": "^11.16.0"
+  },
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

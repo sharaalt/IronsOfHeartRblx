@@ -1,0 +1,28 @@
+{
+  "name": "IronsOfHeartRblx",
+  "globIgnorePaths": [ "**/.package-lock.json" ],
+  "tree": {
+    "$className": "DataModel",
+    "ServerScriptService": {
+      "IronsOfHeartRblx": {
+        "$className": "Folder",
+        "game": {
+          "$path": "src/modules"
+        },
+        "node_modules": {
+          "$path": "node_modules"
+        }
+      },
+      "IronsOfHeartRblxScripts": {
+        "$path": "src/scripts/Server"
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "IronsOfHeartRblxScripts": {
+          "$path": "src/scripts/Client"
+        }
+      }
+    }
+  }
+}

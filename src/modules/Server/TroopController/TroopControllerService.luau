@@ -1,4 +1,5 @@
 -- External Services
+local RemoteEvents = game.ReplicatedStorage.Shared.RemoteEvents
 local TroopControllerProfile = require(script.Parent.TroopControllerProfile)
 local Types = require(script.Parent.Types)
 
@@ -32,6 +33,16 @@ end
 -- ================================
 -- ========= Private API ==========
 -- ================================
+function TroopController:_handleClick(player: Player)
+	if typeof(player) ~= "Instance" then
+		warn(string.format("[TroopController] - Type of player %q is not a valid type.", tostring(typeof(player))))
+		return
+	end
+
+	local Mouse: Instance = RemoteEvents.OnMouseInputRequest:InvokeClient(player)
+
+	print(Mouse)
+end
 
 -- ================================
 -- ========== Public API ==========
@@ -40,9 +51,10 @@ end
 --[[
 	@param troopName string -- The name of the troop you want to create.
 	@param player Instance -- The player object you want to cache the troop to.
+	@return ()
 ]]
-function TroopController:CreateTroop(troopName: string, player: Instance)
-	if typeof(player) ~= "Instance" then
+function TroopController:CreateTroop(troopName: string, player: Player): ()
+	if typeof(player) ~= "Instance" then -- Makes sure the args are valid types.
 		warn(string.format("[TroopController] - Type of player %q is not a valid type.", tostring(typeof(player))))
 		return
 	end
@@ -54,9 +66,9 @@ function TroopController:CreateTroop(troopName: string, player: Instance)
 		return
 	end
 
-	local playerTroops: Types.PlayerTroopCache = self._troopCache[player.UserId]
+	local playerTroops: Types.PlayerTroopCache = self._troopCache[player.UserId] -- Checks for the player cache
 
-	if not playerTroops then
+	if not playerTroops then -- If one doesn't exist create a new player cache.
 		warn(
 			string.format(
 				"[TroopControllerService] - No playerCache found for UserId %q creating a new playerCache...",
@@ -66,12 +78,26 @@ function TroopController:CreateTroop(troopName: string, player: Instance)
 		self._troopCache[player.UserId] = TroopControllerProfile.createPlayerCache(player)
 	end
 
-	local newTroop = TroopControllerProfile.createTroop(troopName)
+	local newTroop = TroopControllerProfile.createTroop(troopName) -- Creates a new troop
 
-	table.insert(self._troopCache[player.UserId].Troops, newTroop)
-	print(self._troopCache)
+	self._maid:GiveTask(newTroop.TroopObject.TroopClick.MouseClick:Connect(function() -- Hook up to the click function
+		self:_handleClick(player)
+	end))
+
+	table.insert(self._troopCache[player.UserId].Troops, newTroop) -- Push the newTroop to the playerCache
+
+	print(
+		string.format(
+			"[TroopControllerService] - Sucessfully created a new troop and cached to player with UserId %q",
+			tostring(player.UserId)
+		)
+	)
+	return
 end
 
-function TroopController:Destory() end
+function TroopController:Destroy()
+	self._maid:DoCleaning()
+	print("[TroopControllerService] - Sucessfully destroyed.")
+end
 
 return TroopController

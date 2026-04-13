@@ -1,8 +1,15 @@
 {
   "name": "IronsOfHeartRblx",
-  "globIgnorePaths": [ "**/.package-lock.json" ],
+  "globIgnorePaths": ["**/.package-lock.json"],
   "tree": {
     "$className": "DataModel",
+    "ReplicatedStorage": {
+      "Shared": {
+        "$className": "Folder",
+        "$path": "src/ReplicatedStorage"
+      }
+    },
+
     "ServerScriptService": {
       "IronsOfHeartRblx": {
         "$className": "Folder",
@@ -17,6 +24,7 @@
         "$path": "src/scripts/Server"
       }
     },
+
     "StarterPlayer": {
       "StarterPlayerScripts": {
         "IronsOfHeartRblxScripts": {

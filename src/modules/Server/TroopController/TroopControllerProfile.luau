@@ -18,7 +18,21 @@ function TroopProfile.createPlayerCache(player: Instance): Types.PlayerTroopCach
 	return tbl
 end
 
-function TroopProfile.createTroop(troopName: string): Types.TroopTable
+function TroopProfile.createTroopInstance(troopName: string, ...): Instance
+	local troopPart = Instance.new("Part")
+	troopPart.Anchored = true
+	troopPart.Position = ... or Vector3.new(0, 0, 0)
+	troopPart.Parent = workspace
+	troopPart.Name = troopName
+
+	local clickDetector = Instance.new("ClickDetector")
+	clickDetector.Parent = troopPart
+	clickDetector.Name = "TroopClick"
+
+	return troopPart
+end
+
+function TroopProfile.createTroop(troopName: string, ...): Types.TroopTable
 	if typeof(troopName) ~= "string" then
 		warn(
 			string.format(
@@ -35,6 +49,7 @@ function TroopProfile.createTroop(troopName: string): Types.TroopTable
 		TroopDamage = 5,
 		TroopMorale = 100,
 		UnitSize = 50,
+		TroopObject = TroopProfile.createTroopInstance(troopName, ...),
 	}
 
 	return tbl

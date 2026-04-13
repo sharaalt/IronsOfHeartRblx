@@ -9,6 +9,7 @@ export type TroopTable = {
 	TroopMorale: number,
 	TroopDamage: number,
 	UnitSize: number,
+	TroopObject: Instance,
 }
 
 local Types = {}

@@ -28,12 +28,26 @@ function TroopController:Start()
 	players.PlayerAdded:Connect(function(a0: Player)
 		self:CreateTroop("TroopName", a0)
 	end)
-end
 
+	RemoteEvents.OnMoveTroopRequest.OnServerEvent:Connect(
+		function(player: Player, mousePosition: Vector3, troopInstance: BasePart)
+			print(mousePosition)
+			local translatedPosition = Vector3.new(mousePosition.x, 0, mousePosition.z)
+			local tweenInfo = TweenInfo.new(3, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut, 0, false, 0)
+			local tweenService = game:GetService("TweenService")
+
+			local tween = tweenService:Create(troopInstance, tweenInfo, { Position = translatedPosition })
+
+			tween:Play()
+
+			troopInstance:SetAttribute("isSelected", false)
+		end
+	)
+end
 -- ================================
 -- ========= Private API ==========
 -- ================================
-function TroopController:_handleClick(player: Player)
+function TroopController:_handleClick(player: Player, troopInstance: Instance)
 	if typeof(player) ~= "Instance" then
 		warn(string.format("[TroopController] - Type of player %q is not a valid type.", tostring(typeof(player))))
 		return
@@ -41,13 +55,19 @@ function TroopController:_handleClick(player: Player)
 
 	local Mouse: Instance = RemoteEvents.OnMouseInputRequest:InvokeClient(player)
 
-	print(Mouse)
+	local isSelected = troopInstance:GetAttribute("isSelected")
+
+	if isSelected then
+		warn(string.format("[TroopControllerService] - Troop with name %q is already selected.", troopInstance.Name))
+		return
+	end
+
+	RemoteEvents.OnTroopSelected:FireClient(player, troopInstance)
 end
 
 -- ================================
 -- ========== Public API ==========
 -- ================================
-
 --[[
 	@param troopName string -- The name of the troop you want to create.
 	@param player Instance -- The player object you want to cache the troop to.
@@ -81,7 +101,7 @@ function TroopController:CreateTroop(troopName: string, player: Player): ()
 	local newTroop = TroopControllerProfile.createTroop(troopName) -- Creates a new troop
 
 	self._maid:GiveTask(newTroop.TroopObject.TroopClick.MouseClick:Connect(function() -- Hook up to the click function
-		self:_handleClick(player)
+		self:_handleClick(player, newTroop.TroopObject)
 	end))
 
 	table.insert(self._troopCache[player.UserId].Troops, newTroop) -- Push the newTroop to the playerCache

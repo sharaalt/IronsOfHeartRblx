@@ -4,6 +4,14 @@
     {
       "Name": "OnMouseInputRequest",
       "ClassName": "RemoteFunction"
+    },
+    {
+      "Name": "OnTroopSelected",
+      "ClassName": "RemoteEvent"
+    },
+    {
+      "Name": "OnMoveTroopRequest",
+      "ClassName": "RemoteEvent"
     }
   ]
 }
